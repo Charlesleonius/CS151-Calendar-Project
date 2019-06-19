@@ -1,4 +1,6 @@
-package projectone;
+package calendarevents;
+
+import calendarevents.CalendarEvent;
 
 import java.time.LocalDate;
 

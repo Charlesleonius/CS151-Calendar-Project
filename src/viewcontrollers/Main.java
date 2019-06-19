@@ -1,4 +1,7 @@
-package projectone;
+package viewcontrollers;
+
+import calendarevents.CalendarEventIO;
+import calendarevents.CalendarEventStore;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -21,10 +24,10 @@ public class Main {
             System.out.println("Select one of the following options:");
             System.out.println("[V]iew by  [C]reate, [G]o to [E]vent list [D]elete  [Q]uit");
         }
+        CalendarViewController calendarViewController = new CalendarViewController(CalendarEventStore.shared);
         switch(menuSelection.toUpperCase()) {
             case "V":
                 System.out.println("Selected view");
-                CalendarViewController calendarViewController = new CalendarViewController(CalendarEventStore.shared);
                 calendarViewController.displayGranularityMenu();
                 break;
             case "C":
@@ -34,21 +37,20 @@ public class Main {
                 break;
             case "G":
                 System.out.println("Selected go to");
+                calendarViewController.displayGotoMenu();
                 break;
             case "E":
                 System.out.println("Selected event");
                 break;
             case "D":
                 System.out.println("Selected delete");
+                DeleteEventViewController deleteEventViewController = new DeleteEventViewController(CalendarEventStore.shared);
+                deleteEventViewController.displayGranularityMenu();
                 break;
             case "Q":
                 System.out.println("Goodbye");
                 break;
         }
-    }
-
-    private static String capitalize(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
     static void displayHomeScreen() {

@@ -1,4 +1,4 @@
-package projectone;
+package calendarevents;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,13 +20,13 @@ public class CalendarEventStore {
     }
 
     public void addEvent(CalendarEvent event) {
-        if (event instanceof  OneTimeEvent) {
+        if (event instanceof OneTimeEvent) {
             OneTimeEvent oneTimeEvent = (OneTimeEvent) event;
             ArrayList<CalendarEvent> eventList = eventMap.get(oneTimeEvent.date.getDayOfYear());
             if (eventList == null) eventList = new ArrayList<>();
             eventList.add(event);
             eventMap.put(oneTimeEvent.date.getDayOfYear(), eventList);
-        } else if (event instanceof  RegularEvent) {
+        } else if (event instanceof RegularEvent) {
             RegularEvent regularEvent = (RegularEvent) event;
             for (int i = regularEvent.startDate.getDayOfYear(); i < regularEvent.endDate.getDayOfYear() + 1; i++) {
                 ArrayList<CalendarEvent> eventList = eventMap.get(i);

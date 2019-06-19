@@ -1,11 +1,13 @@
-package projectone;
+package viewcontrollers;
 
+import calendarevents.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Scanner;
 
 class CalendarViewController {
@@ -37,7 +39,6 @@ class CalendarViewController {
         while (!Arrays.asList("P", "N", "G").contains(menuSelection.toUpperCase())) {
             System.out.println("[P]revious or [N]ext or [G]o back to main menu ? ");
             menuSelection = scanner.nextLine().trim();
-            System.out.println(menuSelection);
         }
         if (menuSelection.toUpperCase().equals("P"))
             if (displayType == DisplayType.DAY)
@@ -51,6 +52,23 @@ class CalendarViewController {
                 displayMonthView(date.plusMonths(1));
         else
             Main.displayHomeScreen();
+    }
+
+    void displayGotoMenu() {
+        Scanner scanner = new Scanner(System.in);
+        LocalDate date = null;
+        while (date == null) {
+            System.out.print("Date (MM/DD/YYYY): ");
+            String dateString = scanner.nextLine();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+                    .withLocale(Locale.getDefault());
+            try {
+                date = LocalDate.parse(dateString, formatter);
+            } catch (Exception e) {
+                System.out.println("Please use the correct date format");
+            }
+        }
+        displayDayView(date);
     }
 
     private void displayDayView(LocalDate date) {

@@ -1,4 +1,4 @@
-package projectone;
+package calendarevents;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,7 +9,7 @@ import java.util.Locale;
 
 public class CalendarEventIO {
 
-    static void loadEventsFromFile(String path, CalendarEventStore store) {
+    public static void loadEventsFromFile(String path, CalendarEventStore store) {
         try {
             FileReader fr = new FileReader(new File(path));
             BufferedReader br = new BufferedReader(fr);
