@@ -12,13 +12,16 @@ import java.util.Scanner;
 
 class CalendarViewController {
 
-    private enum DisplayType { DAY, MONTH };
+    private enum DisplayType { DAY, MONTH }
     private CalendarEventStore eventStore;
 
     CalendarViewController(CalendarEventStore eventStore) {
         this.eventStore = eventStore;
     }
 
+    /***
+     * Displays a menu to select either a day or month view of the calendar
+     */
     void displayGranularityMenu() {
         Scanner scanner = new Scanner(System.in);
         String menuSelection = "";
@@ -33,6 +36,11 @@ class CalendarViewController {
             displayMonthView(LocalDate.now());
     }
 
+    /***
+     * Displays the paginator for traversing months or days
+     * @param displayType The unit (DAY or MONTH) to increment or decrement during traversal
+     * @param date The reference date to traverse from
+     */
     private void displayPaginationMenu(DisplayType displayType, LocalDate date) {
         Scanner scanner = new Scanner(System.in);
         String menuSelection = "";
@@ -51,9 +59,12 @@ class CalendarViewController {
             else
                 displayMonthView(date.plusMonths(1));
         else
-            Main.displayHomeScreen();
+            MainMenuViewController.displayHomeScreen();
     }
 
+    /***
+     * Displays the prompt to visit a specific date
+     */
     void displayGotoMenu() {
         Scanner scanner = new Scanner(System.in);
         LocalDate date = null;
@@ -71,21 +82,29 @@ class CalendarViewController {
         displayDayView(date);
     }
 
+    /***
+     * Displays all events on a given day
+     * @param date The day for which to show events
+     */
     private void displayDayView(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, MMM d yyyy");
         System.out.println(" " + formatter.format(date));
         ArrayList<CalendarEvent> currentEvents = eventStore.getEventsForDay(date);
         if (currentEvents != null) {
-            currentEvents.sort((CalendarEvent p1, CalendarEvent p2) -> p2.startTime.compareTo(p1.startTime));
+            currentEvents.sort((CalendarEvent p1, CalendarEvent p2) -> p2.timeInterval.compareTo(p1.timeInterval));
             for (CalendarEvent currentEvent : currentEvents)
-                System.out.println(currentEvent.title + " : " + currentEvent.startTime + " - " + currentEvent.endTime);
+                System.out.println(currentEvent.title + " : " + currentEvent.getStartTime() + " - " + currentEvent.getEndTime());
         } else {
-            System.out.println("No events scheduled today!");
+            System.out.println("No events scheduled on this date!");
         }
         System.out.println();
         displayPaginationMenu(DisplayType.DAY, date);
     }
 
+    /***
+     * Displays the month calendar with eventful days in curly braces
+     * @param date Any date in the month to be displayed
+     */
     private void displayMonthView(LocalDate date) {
         printCalendarHeader(date);
         LocalDate currentDate = date.minusDays(date.getDayOfMonth() - 1);
@@ -111,10 +130,20 @@ class CalendarViewController {
         displayPaginationMenu(DisplayType.MONTH, date);
     }
 
+
+    /***
+     * Takes the weekdays and converts them from full caps to noun capitalization
+     * @param str The weekday name given by LocalDate.getDayOfWeek()
+     * @return
+     */
     private static String capitalize(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
+    /***
+     * Display the month and year on one line and the weekday headers on the next
+     * @param date Any date in the month to be displayed
+     */
     static void printCalendarHeader(LocalDate date) {
         Month month = date.getMonth(); // Get the current month
         DayOfWeek firstWeekDayOfMonth = date.getDayOfWeek().minus(date.getDayOfMonth() - 1); // Get the first week day of the month
@@ -122,10 +151,8 @@ class CalendarViewController {
         System.out.println("    " + capitalize(month.name().toLowerCase()) + " " + date.getYear()); // Print month header
         System.out.println("Su Mo Tu We Th Fr Sa"); // Print day of week header
         // Print spaces until first weekday is reached
-        int firstMonthDayPrintOffset = firstWeekDayOfMonth.getValue() % 7; // Set sunday to be the first day
-        for (int i = 0; i < firstMonthDayPrintOffset * 3; i++) {
-            System.out.print(" ");
-        }
+        int firstMonthDayPrintOffset = firstWeekDayOfMonth.getValue() % 7; // Set sunday to be the first day (0)
+        for (int i = 0; i < firstMonthDayPrintOffset * 3; i++) System.out.print(" ");
     }
 
 }
